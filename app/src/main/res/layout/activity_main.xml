@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tabs"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -16,22 +15,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:tabIndicator="#151515"
         app:tabIndicatorColor="#202020">
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/loginTabItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login" />
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/signUpTabItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign up" />
 
     </com.google.android.material.tabs.TabLayout>
 
-    <androidx.viewpager2.widget.ViewPager2
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1061722580152",
+    "firebase_url": "https://full-authentication-d4c8e.firebaseio.com",
+    "project_id": "full-authentication-d4c8e",
+    "storage_bucket": "full-authentication-d4c8e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061722580152:android:154753f0792c23d797804d",
+        "android_client_info": {
+          "package_name": "com.bailram.fullauthentication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1061722580152-u8j6c1beam4vvls02mu39dktkbfunndi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bailram.fullauthentication",
+            "certificate_hash": "a611ae3ae774529bef2a9cfb1b55f4bb4fe35cad"
+          }
+        },
+        {
+          "client_id": "1061722580152-2rjbm4o1ofu0p07f700o8q1o44n4puuv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdGwopTF_hvSkCzaXIRv3wdarOONikdkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1061722580152-2rjbm4o1ofu0p07f700o8q1o44n4puuv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
