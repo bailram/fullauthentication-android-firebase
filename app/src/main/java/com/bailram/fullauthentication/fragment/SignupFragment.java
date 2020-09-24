@@ -1,10 +1,12 @@
 package com.bailram.fullauthentication.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +15,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bailram.fullauthentication.R;
+import com.bailram.fullauthentication.VerifyPhoneActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SignupFragment extends Fragment {
+    private static final String TAG = "TAG";
     private EditText fullname, email, password, retypePassword, countryCode, phone;
     private Button button;
     private boolean isDataValid = false;
@@ -66,6 +70,10 @@ public class SignupFragment extends Fragment {
                         public void onSuccess(AuthResult authResult) {
                             Toast.makeText(getActivity(), "User Account is Created.", Toast.LENGTH_SHORT).show();
                             // send the user to verify the phone
+                            Intent verifyAct = new Intent(getActivity(), VerifyPhoneActivity.class);
+                            verifyAct.putExtra("phone", countryCode.getText().toString()+phone.getText().toString());
+                            startActivity(verifyAct);
+                            Log.d(TAG, "onSuccess: "+countryCode.getText().toString()+phone.getText().toString());
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
