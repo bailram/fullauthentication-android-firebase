@@ -40,25 +40,25 @@ public class SignupFragment extends Fragment {
         // instance firebase
         fAuth = FirebaseAuth.getInstance();
 
-        // validate data
-        validateData(fullname);
-        validateData(email);
-        validateData(password);
-        validateData(retypePassword);
-        validateData(countryCode);
-        validateData(phone);
-
-        // validate password
-        if(!password.getText().toString().equals(retypePassword.getText().toString())){
-            isDataValid = false;
-            retypePassword.setError("Password Do not Match");
-        }else{
-            isDataValid = true;
-        }
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // validate data
+                validateData(fullname);
+                validateData(email);
+                validateData(password);
+                validateData(retypePassword);
+                validateData(countryCode);
+                validateData(phone);
+
+                // validate password
+                if(!password.getText().toString().equals(retypePassword.getText().toString())){
+                    isDataValid = false;
+                    retypePassword.setError("Password Do not Match");
+                }else{
+                    isDataValid = true;
+                }
+
                 if(isDataValid){
                     // proceed with the registration of the user
                     fAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
