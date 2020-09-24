@@ -1,0 +1,1 @@
+# fullauthentication-android-firebase
