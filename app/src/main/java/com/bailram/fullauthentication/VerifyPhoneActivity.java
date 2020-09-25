@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +31,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
     private PhoneAuthCredential phoneAuthCredential;
     private PhoneAuthProvider.ForceResendingToken token;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBacks;
+    private ProgressBar progressBar;
     private String verificationId;
     private String phone;
 
@@ -50,6 +54,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         otpNumberFour = findViewById(R.id.otpNumberFour);
         otpNumberFive = findViewById(R.id.otpNumberFive);
         otpNumberSix = findViewById(R.id.optNumberSix);
+        progressBar = findViewById(R.id.progressBar);
 
         verifyPhone = findViewById(R.id.verifyPhoneBTn);
         resendOTP = findViewById(R.id.resendOTP);
@@ -69,9 +74,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                     // send otp to the user
                     String otp = otpNumberOne.getText().toString()+otpNumberTwo.getText().toString()+otpNumberThree.getText().toString()+otpNumberFour.getText().toString()+
                             otpNumberFive.getText().toString()+otpNumberSix.getText().toString();
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId,otp);
-
-                    verifyAuthentication(credential);
+                    verifyCode(otp);
                 }
             }
         });
@@ -80,26 +83,31 @@ public class VerifyPhoneActivity extends AppCompatActivity {
             @Override
             public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(s, forceResendingToken);
-                verificationId = s;
+                verificationId = s; // save send otp code verification to global var
                 token = forceResendingToken;
                 resendOTP.setVisibility(View.GONE); // when code send resend, hide button resend
+                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCodeAutoRetrievalTimeOut(String s) {
                 super.onCodeAutoRetrievalTimeOut(s);
                 resendOTP.setVisibility(View.VISIBLE); // when code time out, show button resend
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                verifyAuthentication(phoneAuthCredential);
                 resendOTP.setVisibility(View.GONE);
+                String code = phoneAuthCredential.getSmsCode(); // get sms code from this app
+                if(code!=null){ // if phone number is on the same device
+                    verifyCode(code);
+                }
             }
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
-                Toast.makeText(getApplicationContext(), "OTP Verification Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "OTP Verification Failed! "+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -113,23 +121,36 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         });
     }
 
-    private void verifyAuthentication(PhoneAuthCredential credential) {
-        firebaseAuth.getCurrentUser().linkWithCredential(credential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-                Toast.makeText(getApplicationContext(), "Account Created and Linked.", Toast.LENGTH_SHORT).show();
-                // send to dashboard
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+    private void verifyCode(String otp) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId,otp);
+        signInUserByCredential(credential);
+    }
 
-            }
-        });
+    private void signInUserByCredential(PhoneAuthCredential credential) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(VerifyPhoneActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            // do intent or something
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getApplicationContext(),"Do intent or something",Toast.LENGTH_SHORT).show();
+                        }else{
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getApplicationContext(),task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void sendOTP(String phoneNumber){
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber,60, TimeUnit.SECONDS,this,mCallBacks);
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phoneNumber,
+                60,
+                TimeUnit.SECONDS,
+                this,
+                mCallBacks);
     }
 
     private void resendOTP(String phoneNumber){
